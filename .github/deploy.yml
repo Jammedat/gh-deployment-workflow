@@ -1,0 +1,40 @@
+# Create a simple workflow to deploy the static site to GitHub Pages
+name: Deploy to GitHub Pages
+on:
+  push:
+    branches:
+      - main
+
+
+
+permissions:
+  contents: read
+  pull-requests: write
+  Pages: write
+  id-token: write
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    enviroment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifacts@v3
+        
+        with:
+          path: '.' # upload entire directory
+
+      - name: Deploy to github-pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+           
